@@ -1,2 +1,4 @@
 kata = (2019, 9, 25, 3, 30)
-print('{0}/{1}/{2} {3}:{4}'.format(*kata))
+
+yyyy, dd, mm, h, m = kata
+print(f"{dd:02d}/{mm:02d}/{yyyy:02d} {h:02d}:{m:02d}")

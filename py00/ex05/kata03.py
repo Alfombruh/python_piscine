@@ -1,3 +1,3 @@
 kata = "The right form"
-f_kata = kata[:42]
-print('--------------------------'+f_kata)
+#print("{:->42}".format(kata), end='')
+print(f"{kata:->42}".format(kata), end='')
