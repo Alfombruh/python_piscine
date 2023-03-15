@@ -59,14 +59,17 @@ class Bank:
 				print(f"{new_account.name} value int or float check")
 				return True
 			print(f'{atribute} : {value}')
-		
 	
 	def	add(self, new_account):
 		""" Add new_account in the Bank
 			@new_account: Account() new account to append
 			@return True if success, False if an error occured
 		"""
-		self.checkFix(new_account)
+		for elem in self.accoutns:
+			if elem == new_account.name:
+				print ('Account name is already chosen')
+				return 
+		#self.checkFix(new_account)
 		#if new_account.name in self.accoutns:
 			#return  False
 		self.accoutns.append(new_account)
@@ -80,8 +83,12 @@ class Bank:
 		"""
 		if amount < 0 or dest.value < amount:
 			return
+		self.fix_account(origin)
+		self.fix_account(dest)
+		print("bot accounts are gud!")
 		origin.transfer(-amount)
 		dest.transfer(amount)
+		print(f"Transfer has been done from {origin.name} to {dest.name}")
 		
 
 	def fix_account(self, name):
@@ -89,13 +96,61 @@ class Bank:
 			@name: str(name) of the account
 			@return True if success, False if an error occured
 		"""
+		check = 0
+
 		for elem in self.accoutns:
-			if elem.name == name:
-				toFix = elem.name #we will have to fix this account
+			print (f'name is {elem.name} and we are looking for {name.name}')
+			if elem.name == name.name:
+				print('for loop')
+				if not isinstance(elem.name, str):
+					print('Account name is int')
+					return False
+				toFix = elem #we will have to fix this account
+				for key in toFix.__dict__.keys(): #checks there are none keys that start with 'b'
+					if key[0] == 'b':
+						del toFix[key]
+				for atribute in toFix.__dict__.keys(): #checks if atribute has value, name or id
+					if atribute == "name" or atribute == "id" or atribute == "value":
+						check = 1
+				if check != 1: #checks if no atribute in name id or value
+					i = 0
+					for elem in self.accoutns:
+						if elem.name == 'Default' + str(i):
+							i += 1
+					toFix.__dict__['name'] == 'Default' + str(i)
+				for atribute in toFix.__dict__.keys(): #checks if atribute has zip or addr
+					if atribute == "zip" or atribute == "addr":
+						check = 2
+				if check != 2: # adds a new atribute to fix account if not zip or addr
+					i = 0
+					for elem in self.accoutns:
+						if elem.name == 'DefaultAddr' + str(i):
+							i += 1
+					toFix.__dict__['addr'] == 'DefaultAddr' + str(i)
+				for key, value in toFix.__dict__.items(): #for key that casts name id or value in case of error
+					if key == 'name' and not isinstance(value, str):
+						value = (str)(value)
+					if key == 'id' and not isinstance(value, int):
+						value = (int)(value)
+					if key == 'value' and not (isinstance(value, int) or isinstance(value, float)):
+						value = (float)(value)
+				print('im somewhere')
+				if len(toFix.__dict__.keys()) % 2 == 0: #checks the number of atributes isnt even and deletes one atribute if so
+					for key in toFix.__dict__.keys():
+						if (key != "name" or key != 'id' or key != 'value') and (key != "zip" or key != "addr"):
+							del toFix.__dict__[key]
+							print('sex')
+							break
+				print("Account FIXED!!!")
 		return False
 
 if __name__ == "__main__":
 	bank = Bank()
 	bank.add(Account('Smith Jane', zip='911-745', value=1000.0, ref='1044618427ff2782f0bbece0abd05f31'))
-	print('here!')
+	bank.add(Account('Smith Jone', zip='911-745', value=1000.0, ref='1044618427ff2782f0bbece0abd05f31'))
+	bank.add(Account('Smith June', zip='911-745', value=1000.0, ref='1044618427ff2782f0bbece0abd05f31'))
+	bank.add(Account('Smith Jene', zip='911-745', value=1000.0, ref='1044618427ff2782f0bbece0abd05f31'))
+	bank.transfer(bank.accoutns[0], bank.accoutns[1], 10)
+	print('Account is valid!!')
 	bank.add(Account('William John', zip='100-064', value=6460.0, ref='58ba2b9954cd278eda8a84147ca73c87', info=None))
+	bank.fix_account(bank.accoutns[4])
